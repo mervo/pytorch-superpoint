@@ -18,8 +18,6 @@ if __name__ == '__main__':
 
     pts_src = pts_src['pts']
     pts_dst = pts_dst['pts']
-    print(pts_src[:1])
-    # print(pts_src[:,1:2].shape)
     print(pts_dst.shape)
 
     for limit in range(10,120,10):
@@ -31,11 +29,15 @@ if __name__ == '__main__':
         print("topK filter: ", pts.shape)        
         '''
         print(limit)
-        h, status = cv2.findHomography(pts_src[:limit], pts_dst[:limit])
+        print(pts_src[:2])
+        # h, status = cv2.findHomography(pts_src[:limit, :], pts_dst[:limit, :])
+        M = cv2.getAffineTransform(pts_src[:3], pts_dst[:3])
         # print(h)
 
         # Warp source image to destination based on homography
-        im_out = cv2.warpPerspective(im_src, h, (im_dst.shape[1], im_dst.shape[0]))
+        # im_out = cv2.warpPerspective(im_src, h, (im_dst.shape[1], im_dst.shape[0]))
+        im_out = cv2.warpAffine(im_src, M, (im_dst.shape[1], im_dst.shape[0]), flags=cv2.INTER_LINEAR,
+                             borderMode=cv2.BORDER_REFLECT_101)
         print(im_dst.shape[1], im_dst.shape[0])
 
         # Display images
